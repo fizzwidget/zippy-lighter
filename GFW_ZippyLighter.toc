@@ -1,1 +1,12 @@
-## Interface: 80000## Version: 8.0## Title: Fizzwidget ZippyLighter## Author: Gazmik Fizzwidget## Notes: Quick access to fire for cooking.### X-Website: http://fizzwidget.com/zippylighter### X-Appcast: http://fizzwidget.com/notes/zippylighter/feed## X-Category: Interface Enhancements## SavedVariables: FZL_CookingMethodZippyLighter.lualocalization.lua
+## Interface: 80000
+## Version: 8.0
+## Title: Fizzwidget ZippyLighter
+## Author: Gazmik Fizzwidget
+## Notes: Quick access to fire for cooking.
+### X-Website: http://fizzwidget.com/zippylighter
+### X-Appcast: http://fizzwidget.com/notes/zippylighter/feed
+## X-Category: Interface Enhancements
+## SavedVariables: FZL_CookingMethod
+
+ZippyLighter.lua
+localization.lua
