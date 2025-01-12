@@ -1,7 +1,7 @@
 ------------------------------------------------------
 -- ZippyLighter.lua
 ------------------------------------------------------
-local addonName, addonTable = ...; 
+local addonName, addonTable = ...;
 
 local BASIC_FIRE_SPELL_ID = 818;
 local COOKING_SKILL_ID = 185;
@@ -23,13 +23,13 @@ FZL_Toys = {
 function FZL_OnEvent(self, event, ...)
 
     if (event == "TRADE_SKILL_SHOW" or event == "PLAYER_REGEN_ENABLED") then
-        
-        if (InCombatLockdown()) then 
+
+        if (InCombatLockdown()) then
             self:RegisterEvent("PLAYER_REGEN_ENABLED");
-            return; 
+            return;
         end
         self:UnregisterEvent("PLAYER_REGEN_ENABLED");
-        
+
         local skillID = C_TradeSkillUI.GetTradeSkillLine();
         if (skillID == COOKING_SKILL_ID) then
             if (not FZL_FireButton) then
@@ -40,13 +40,13 @@ function FZL_OnEvent(self, event, ...)
                 method = FZL_DetectMethod();
             end
             FZL_SetupFireButton(method);
-            FZL_FireButton:Show();            
+            FZL_FireButton:Show();
         elseif (FZL_FireButton) then
             FZL_FireButton:Hide();
         end
-        
+
     elseif (event == "MODIFIER_STATE_CHANGED") then
-        
+
         if (FZL_FireButton and IsAltKeyDown() and FZL_HasOtherCookingMethods()) then
             if (FZL_FireButton and FZL_FireButton:IsMouseOver()) then
                 FZL_ShowFlyout();
@@ -54,7 +54,7 @@ function FZL_OnEvent(self, event, ...)
         elseif (FZL_FlyoutFrame) then
             FZL_FlyoutFrame:Hide();
         end
-        
+
     elseif (event == "SPELL_UPDATE_COOLDOWN" and FZL_FireButton) then
 
         local kind, id = strsplit(":", FZL_FireButton.info);
@@ -65,7 +65,7 @@ function FZL_OnEvent(self, event, ...)
         elseif (kind == "item") then
             start, duration, enable = GetItemCooldown(id);
             CooldownFrame_Set(FZL_FireButtonCooldown, start, duration, enable);
-        end        
+        end
 
     elseif (event == "SPELL_UPDATE_USABLE" and FZL_FireButton) then
 
@@ -77,15 +77,15 @@ function FZL_OnEvent(self, event, ...)
             local isUsable, notEnoughMana = IsUsableSpell(id);
             if (not isUsable) then
                 FZL_FireButtonIcon:SetVertexColor(0.4, 0.4, 0.4);
-            elseif (notEnoughMana) then    
+            elseif (notEnoughMana) then
                 -- not sure this ever happens for fire, but we'll keep the pattern just in case
                 FZL_FireButtonIcon:SetVertexColor(0.5, 0.5, 0.1);
             else
                 FZL_FireButtonIcon:SetVertexColor(1, 1, 1);
-            end        
+            end
         end
     end
-        
+
 end
 
 ------------------------------------------------------
@@ -102,11 +102,11 @@ function FZL_FireButton_OnEnter(self)
         GameTooltip:SetHyperlink(self.info);
     end
     GameTooltip:AddLine(" ");
-    
+
     local c = GRAY_FONT_COLOR;
     local title = GetAddOnMetadata(addonName, "Title");
     local version = GetAddOnMetadata(addonName, "Version");
-    
+
     GameTooltip:AddDoubleLine(title, string.format("v%s", version), c.r, c.g, c.b, c.r, c.g, c.b);
 
     if (FZL_HasOtherCookingMethods()) then
@@ -114,15 +114,15 @@ function FZL_FireButton_OnEnter(self)
         GameTooltip:AddLine(string.format(FZL_CONFIG_INFO, keyText), c.r, c.g, c.b);
     end
     GameTooltip:Show();
-    
+
     if (IsModifiedClick("SHOWITEMFLYOUT")) then
         FZL_ShowFlyout();
     end
 end
 
-function FZL_CreateFireButton()    
+function FZL_CreateFireButton()
     FZL_FireButton = CreateFrame("Button", "FZL_FireButton", TradeSkillFrame, "SpellBookSkillLineTabTemplate,SecureActionButtonTemplate");
-    
+
     FZL_FireButton:SetPoint("TOPLEFT", TradeSkillFrame, "TOPRIGHT", 0, -65);
 
     FZL_FireButton:SetPushedTexture("Interface\\Buttons\\UI-Quickslot-Depress");
@@ -137,7 +137,7 @@ end
 function FZL_SetupFireButton(method)
     local kind, id, name, icon = strsplit(":", method);
     if (kind == "spell") then
-        name, _, icon = GetSpellInfo(id);        
+        name, _, icon = GetSpellInfo(id);
         FZL_FireButton:SetAttribute("type", "spell");
         FZL_FireButton:SetAttribute("spell", name);
         FZL_FireButtonCooldown:Show();
@@ -194,7 +194,7 @@ function FZL_SetupFlyoutButton(index, method)
         button:SetScript("OnClick", FZL_FlyoutButton_OnClick);
         button:SetScript("OnEnter", FZL_FlyoutButton_OnEnter);
         button:SetScript("OnLeave", GameTooltip_Hide);
-        
+
         local lastButton = _G["FZL_FlyoutButton"..(index - 1)];
         if (lastButton) then
             button:SetPoint("LEFT", lastButton, "RIGHT");
@@ -207,13 +207,13 @@ function FZL_SetupFlyoutButton(index, method)
         kind, id, name, icon = strsplit(":", method);
     end
     if (kind == "spell") then
-        _, _, icon = GetSpellInfo(id);        
+        _, _, icon = GetSpellInfo(id);
     elseif (kind ~= "macro" and kind ~= "item") then
         icon = "Interface\\Icons\\INV_Misc_QuestionMark";
     end
     local buttonIcon = _G["FZL_FlyoutButton"..index.."Icon"];
     buttonIcon:SetTexture(icon);
-    button.info = method;    
+    button.info = method;
 end
 
 function FZL_ShowFlyout()
@@ -224,7 +224,7 @@ function FZL_ShowFlyout()
         FZL_FlyoutFrame:SetHeight(32);
     end
     local buttonIndex = 1;
-        
+
     for toyIndex = 1, #FZL_Toys do
         local toyItemID = FZL_Toys[toyIndex];
         if (PlayerHasToy(toyItemID)) then
@@ -233,7 +233,7 @@ function FZL_ShowFlyout()
             buttonIndex = buttonIndex + 1;
         end
     end
-    
+
     for petIndex = 1, #FZL_PetSpecies do
         local petSpeciesID = FZL_PetSpecies[petIndex];
         local petID, name, icon = FZL_PetInfoForSpeciesID(petSpeciesID);
@@ -242,15 +242,15 @@ function FZL_ShowFlyout()
             buttonIndex = buttonIndex + 1;
         end
     end
-        
+
     FZL_SetupFlyoutButton(buttonIndex, "spell:"..BASIC_FIRE_SPELL_ID);
     buttonIndex = buttonIndex + 1;
 
     FZL_SetupFlyoutButton(buttonIndex, nil);    -- default (auto select)
-    
+
     FZL_FlyoutFrame:SetWidth(32 * buttonIndex);
     FZL_FlyoutFrame:Show();
-    
+
 end
 
 ------------------------------------------------------
@@ -264,7 +264,7 @@ function FZL_PetInfoForSpeciesID(queryID)
         if (speciesID == queryID and owned) then
             return petID, customName or speciesName, icon;
         end
-    end    
+    end
 end
 
 function FZL_HasOtherCookingMethods()
@@ -272,7 +272,7 @@ function FZL_HasOtherCookingMethods()
 end
 
 function FZL_DetectMethod()
-    
+
     for toyIndex = 1, #FZL_Toys do
         local toyItemID = FZL_Toys[toyIndex];
         if (PlayerHasToy(toyItemID)) then
@@ -280,7 +280,7 @@ function FZL_DetectMethod()
             return strjoin(":", "item", toyItemID, toyName, icon);
         end
     end
-    
+
     for petIndex = 1, #FZL_PetSpecies do
         local petSpeciesID = FZL_PetSpecies[petIndex];
         local petID, name, icon = FZL_PetInfoForSpeciesID(petSpeciesID);
@@ -288,14 +288,14 @@ function FZL_DetectMethod()
             return strjoin(":", "macro", petID, name, icon);
         end
     end
-    
+
     return "spell:"..BASIC_FIRE_SPELL_ID;    -- default
 end
 
 ------------------------------------------------------
 -- Run-time loading
 ------------------------------------------------------
-        
+
 FZL_EventFrame = CreateFrame("Frame", nil, nil);
 FZL_EventFrame:SetScript("OnEvent", FZL_OnEvent);
 FZL_EventFrame:RegisterEvent("TRADE_SKILL_SHOW");
