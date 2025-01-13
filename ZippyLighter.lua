@@ -7,17 +7,17 @@ local BASIC_FIRE_SPELL_ID = 818
 local COOKING_SKILL_ID = 185
 
 FZL_PetSpecies = {
-    -- 474, -- Cheetah Cub, testing
-    297,    -- Lil' Ragnaros
-    1204,    -- Pierre
+    -- 474,   -- Cheetah Cub, testing
+    297,      -- Lil' Ragnaros
+    1204,     -- Pierre
 }
 
 FZL_Toys = {
-    -- 34686,    -- Brazier of Dancing Flames, testing
+    -- 34686, -- Brazier of Dancing Flames, testing
     70722,    -- Little Wickerman
     67097,    -- Grim Campfire
-    104309, -- Eternal Kiln
-    116757, -- Steamworks Sausage Grill
+    104309,   -- Eternal Kiln
+    116757,   -- Steamworks Sausage Grill
 }
 
 function FZL_OnEvent(self, event, ...)
