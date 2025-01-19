@@ -1,5 +1,5 @@
-## Interface: 80000
-## Version: 8.0
+## Interface: 110007
+## Version: 11.0
 ## Title: Fizzwidget ZippyLighter
 ## Author: Gazmik Fizzwidget
 ## Notes: Quick access to fire for cooking.
